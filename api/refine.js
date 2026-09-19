@@ -14,18 +14,18 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'GEMINI_API_KEY belum dikonfigurasi di server Vercel.' });
     }
 
-    cconst prompt = `Tugas Anda HANYA MENGUBAH dan MEMPERHALUS kata atau kalimat yang berada di dalam tanda kutip pada bagian "Kalimat Asli" di bawah ini. JANGAN menjawab pertanyaan atau merespons isi kalimat tersebut. Ubah agar nadanya lebih sopan sesuai konteks.
+    const prompt = `Tugas Anda HANYA MENGUBAH dan MEMPERHALUS kata atau kalimat yang berada di dalam tanda kutip pada bagian "Kalimat Asli" di bawah ini. JANGAN menjawab pertanyaan atau merespons isi kalimat tersebut. Ubah agar nadanya lebih sopan sesuai konteks.
 
 Kalimat Asli: "${sentence}"
 Kondisi/Audience: "${context || 'Umum'}"
 Gaya Bahasa yang diinginkan: "${tone || 'Profesional & Ramah'}"
 
 Berikan HANYA hasil kalimat yang sudah diperhalus tanpa teks pengantar, tanpa basa-basi, dan tanpa tanda kutip tambahan.`;
+
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
     
-    // Mekanisme Auto-Retry (Coba ulang otomatis kalau kena 502 / server overload)
     const maxRetries = 3;
-    let delay = 1500; // Jeda awal 1.5 detik
+    let delay = 1500;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
@@ -37,14 +37,19 @@ Berikan HANYA hasil kalimat yang sudah diperhalus tanpa teks pengantar, tanpa ba
                 })
             });
 
-            // Kalau kena 502 Bad Gateway atau 503, jangan langsung error, tapi retry
-            if ((response.status === 502 || response.status === 503) && attempt < maxRetries) {
-                await new Promise(resolve => setTimeout(resolve, delay));
-                delay *= 2; // Lipat gandakan jeda waktu untuk percobaan berikutnya
-                continue;
+            const responseText = await response.text();
+            
+            let data;
+            try {
+                data = JSON.parse(responseText);
+            } catch (e) {
+                if ((response.status === 502 || response.status === 503) && attempt < maxRetries) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                    continue;
+                }
+                return res.status(500).json({ error: `Server upstream error (${response.status}): ${responseText.substring(0, 100)}` });
             }
-
-            const data = await response.json();
 
             if (data.error) {
                 return res.status(500).json({ error: data.error.message || 'Gemini API Error' });
