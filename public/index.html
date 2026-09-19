@@ -50,7 +50,7 @@
                 <!-- Navigasi Tombol Mode -->
                 <div class="text-xs font-mono flex bg-zinc-100 p-1 border border-bordercolor rounded-md">
                     <button onclick="switchMode('rephraser')" id="navRephraser" class="px-3 py-1 rounded transition-colors bg-zinc-900 text-white font-medium">Rephraser</button>
-                    <button onclick="switchMode('pdf')" id="navPdf" class="px-3 py-1 rounded transition-colors text-subText hover:text-darkText">Buat Surat PDF</button>
+                    <button onclick="switchMode('pdf')" id="navPdf" class="px-3 py-1 rounded transition-colors text-subText hover:text-darkText">Generator Surat</button>
                 </div>
                 <div class="text-xs font-mono text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-md flex items-center space-x-1.5">
                     <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
@@ -63,16 +63,14 @@
     <!-- Main Content -->
     <main class="w-full max-w-4xl mx-auto px-6 py-10 flex-grow">
 
-        <!-- ================= FITUR 1: REPHRASER (DEFAULT) ================= -->
+        <!-- ================= FITUR 1: REPHRASER ================= -->
         <div id="viewRephraser">
             <div class="mb-8">
                 <h2 class="text-2xl font-bold tracking-tight text-darkText mb-2">Haluskan nada bicara, jaga makna.</h2>
                 <p class="text-sm text-subText">Ubah kalimat mentah, ketus, atau kaku menjadi profesional dan santun sesuai konteks tujuanmu.</p>
             </div>
 
-            <!-- Workspace Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Kolom Kiri: Input -->
                 <div class="flex flex-col space-y-4">
                     <div class="flex flex-col space-y-1.5">
                         <label for="inputSentence" class="text-xs font-mono uppercase tracking-wider text-subText">1. Kalimat Asli / Mentah</label>
@@ -84,7 +82,6 @@
                         <input type="text" id="inputContext" placeholder="Contoh: Mengingatkan rekan kerja senior secara sopan" class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 transition-colors rounded-md">
                     </div>
 
-                    <!-- Pilihan Tone Cepat -->
                     <div class="flex flex-col space-y-1.5">
                         <label class="text-xs font-mono uppercase tracking-wider text-subText">3. Pilih Gaya Bahasa</label>
                         <div class="grid grid-cols-3 gap-2">
@@ -99,7 +96,6 @@
                     </button>
                 </div>
 
-                <!-- Kolom Kanan: Output -->
                 <div class="flex flex-col space-y-1.5">
                     <div class="flex items-center justify-between">
                         <label class="text-xs font-mono uppercase tracking-wider text-subText">Hasil Perbaikan</label>
@@ -113,53 +109,75 @@
             </div>
         </div>
 
-        <!-- ================= FITUR 2: GENERATOR SURAT PDF ================= -->
+        <!-- ================= FITUR 2: GENERATOR SURAT & PREVIEW ================= -->
         <div id="viewPdf" class="hidden">
             <div class="mb-8">
-                <h2 class="text-2xl font-bold tracking-tight text-darkText mb-2">Generator Surat Resmi & PDF.</h2>
-                <p class="text-sm text-subText">Isi kolom-kolom berikut untuk merakit surat formal yang langsung siap di-download menjadi PDF.</p>
+                <h2 class="text-2xl font-bold tracking-tight text-darkText mb-2">Generator Surat Resmi & Preview.</h2>
+                <p class="text-sm text-subText">Isi form di kiri, gunakan bantuan AI untuk merapikan isinya, lalu lihat hasil preview secara real-time di kanan.</p>
             </div>
 
-            <!-- Workspace Grid Surat -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Kolom Kiri: Form Input Lengkap -->
+                <!-- Kolom Kiri: Form Input -->
                 <div class="flex flex-col space-y-4">
                     <div class="flex flex-col space-y-1.5">
                         <label class="text-xs font-mono uppercase tracking-wider text-subText">Nama Pengirim</label>
-                        <input type="text" id="pdfNama" placeholder="Contoh: Andi Pratama" class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 transition-colors rounded-md">
+                        <input type="text" id="pdfNama" oninput="updatePreview()" placeholder="Contoh: Andi Pratama" class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 transition-colors rounded-md">
                     </div>
 
                     <div class="flex flex-col space-y-1.5">
                         <label class="text-xs font-mono uppercase tracking-wider text-subText">Jabatan / Departemen</label>
-                        <input type="text" id="pdfJabatan" placeholder="Contoh: Staff Marketing" class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 transition-colors rounded-md">
+                        <input type="text" id="pdfJabatan" oninput="updatePreview()" placeholder="Contoh: Staff Marketing" class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 transition-colors rounded-md">
                     </div>
 
                     <div class="flex flex-col space-y-1.5">
-                        <label class="text-xs font-mono uppercase tracking-wider text-subText">Penerima (Cth: HRD Manager)</label>
-                        <input type="text" id="pdfPenerima" placeholder="Contoh: Ibu Siska / HRD Department" class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 transition-colors rounded-md">
+                        <label class="text-xs font-mono uppercase tracking-wider text-subText">Penerima</label>
+                        <input type="text" id="pdfPenerima" oninput="updatePreview()" placeholder="Contoh: HRD Manager" class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 transition-colors rounded-md">
                     </div>
 
                     <div class="flex flex-col space-y-1.5">
-                        <label class="text-xs font-mono uppercase tracking-wider text-subText">Subjek / Perihal Surat</label>
-                        <input type="text" id="pdfSubjek" placeholder="Contoh: Surat Pengunduran Diri" class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 transition-colors rounded-md">
-                    </div>
-                </div>
-
-                <!-- Kolom Kanan: Alasan & Isi Surat -->
-                <div class="flex flex-col space-y-4">
-                    <div class="flex flex-col space-y-1.5">
-                        <label class="text-xs font-mono uppercase tracking-wider text-subText">Alasan Utama Pengajuan</label>
-                        <textarea id="pdfAlasan" rows="3" placeholder="Tuliskan alasan atau latar belakang..." class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 resize-none transition-colors rounded-md"></textarea>
+                        <label class="text-xs font-mono uppercase tracking-wider text-subText">Subjek / Perihal</label>
+                        <input type="text" id="pdfSubjek" oninput="updatePreview()" placeholder="Contoh: Surat Pengunduran Diri" class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 transition-colors rounded-md">
                     </div>
 
                     <div class="flex flex-col space-y-1.5">
-                        <label class="text-xs font-mono uppercase tracking-wider text-subText">Isi Detail Surat / Pesan</label>
-                        <textarea id="pdfIsi" rows="4" placeholder="Tuliskan isi detail pesan surat..." class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 resize-none transition-colors rounded-md"></textarea>
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs font-mono uppercase tracking-wider text-subText">Isi Surat / Alasan</label>
+                            <button type="button" onclick="bantuTulisAI()" id="aiBtn" class="text-[11px] font-mono text-emerald-600 hover:underline">✨ Bantu Tulis dengan AI</button>
+                        </div>
+                        <textarea id="pdfIsi" rows="5" oninput="updatePreview()" placeholder="Tuliskan isi surat secara kasar di sini, lalu klik Bantu Tulis dengan AI..." class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 resize-none transition-colors rounded-md"></textarea>
                     </div>
 
                     <button onclick="generateSuratPDF()" class="w-full py-3 bg-accent text-white text-xs font-mono uppercase tracking-wider hover:bg-zinc-800 transition-colors mt-2 flex items-center justify-center space-x-2 rounded-md">
-                        <span>Cetak & Download PDF</span>
+                        <span>Download PDF Resmi</span>
                     </button>
+                </div>
+
+                <!-- Kolom Kanan: Live Preview Dokumen -->
+                <div class="flex flex-col space-y-1.5">
+                    <label class="text-xs font-mono uppercase tracking-wider text-subText">Live Preview Surat</label>
+                    <div id="previewContainer" class="w-full flex-grow min-h-[420px] p-6 bg-panel border border-bordercolor text-xs text-darkText font-serif leading-relaxed flex flex-col justify-between rounded-md shadow-sm">
+                        <div class="space-y-4">
+                            <div class="text-center font-bold tracking-wider text-sm border-b pb-3">SURAT RESMI</div>
+                            <div>
+                                <p><strong>Perihal:</strong> <span id="prevSubjek">[Subjek Surat]</span></p>
+                                <p><strong>Kepada Yth.</strong> <span id="prevPenerima">[Penerima]</span></p>
+                            </div>
+                            <div>
+                                <p>Dengan hormat,</p>
+                                <p class="mt-2">Yang bertanda tangan di bawah ini:</p>
+                                <p class="pl-4">- Nama: <span id="prevNama">[Nama Pengirim]</span></p>
+                                <p class="pl-4">- Jabatan: <span id="prevJabatan">[Jabatan]</span></p>
+                            </div>
+                            <div>
+                                <p class="mt-2 whitespace-pre-wrap" id="prevIsi">[Isi surat dan alasan akan tampil secara real-time di sini...]</p>
+                            </div>
+                        </div>
+                        <div class="pt-8 text-right">
+                            <p>Hormat saya,</p>
+                            <br><br>
+                            <p class="font-bold underline"><span id="prevTandaTangan">[Nama Pengirim]</span></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -177,9 +195,9 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             setActiveToneButton();
+            updatePreview();
         });
 
-        // Fungsi Switch Tab Mode
         function switchMode(mode) {
             const viewRephraser = document.getElementById('viewRephraser');
             const viewPdf = document.getElementById('viewPdf');
@@ -245,10 +263,7 @@
                 });
 
                 const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.error || 'Terjadi kesalahan pada server.');
-                }
+                if (!response.ok) throw new Error(data.error || 'Terjadi kesalahan');
                 
                 outputText.textContent = data.result;
                 outputText.classList.remove('text-subText');
@@ -267,22 +282,69 @@
 
         function copyOutput() {
             const text = document.getElementById('outputText').textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                const copyBtn = document.getElementById('copyBtn');
-                copyBtn.textContent = 'Berhasil disalin!';
-                setTimeout(() => {
-                    copyBtn.textContent = 'Salin Teks';
-                }, 2000);
-            });
+            navigator.clipboard.writeText(text);
         }
 
-        // Fungsi Cetak Surat ke PDF menggunakan jsPDF
+        // Live Preview Update
+        function updatePreview() {
+            const nama = document.getElementById('pdfNama').value || '[Nama Pengirim]';
+            const jabatan = document.getElementById('pdfJabatan').value || '[Jabatan]';
+            const penerima = document.getElementById('pdfPenerima').value || '[Penerima]';
+            const subjek = document.getElementById('pdfSubjek').value || '[Subjek Surat]';
+            const isi = document.getElementById('pdfIsi').value || '[Isi surat dan alasan akan tampil secara real-time di sini...]';
+
+            document.getElementById('prevNama').textContent = nama;
+            document.getElementById('prevJabatan').textContent = jabatan;
+            document.getElementById('prevPenerima').textContent = penerima;
+            document.getElementById('prevSubjek').textContent = subjek;
+            document.getElementById('prevIsi').textContent = isi;
+            document.getElementById('prevTandaTangan').textContent = nama;
+        }
+
+        // Fitur AI Bantu Tulis Isi Surat
+        async function bantuTulisAI() {
+            const rawText = document.getElementById('pdfIsi').value.trim();
+            const subjek = document.getElementById('pdfSubjek').value.trim();
+
+            if (!rawText) {
+                alert('Tuliskan poin-poin atau draf kasar di kolom isi surat terlebih dahulu untuk dibantu AI.');
+                return;
+            }
+
+            const aiBtn = document.getElementById('aiBtn');
+            aiBtn.textContent = '✨ AI sedang merangkai...';
+            aiBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/refine', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sentence: rawText,
+                        context: `Membuat isi surat resmi profesional dengan perihal: ${subjek}`,
+                        tone: 'Profesional & Formal'
+                    })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error);
+
+                document.getElementById('pdfIsi').value = data.result;
+                updatePreview();
+            } catch (err) {
+                alert('Gagal memproses AI: ' + err.message);
+            } finally {
+                aiBtn.textContent = '✨ Bantu Tulis dengan AI';
+                aiBtn.disabled = false;
+            }
+        }
+
+        // Cetak PDF
         function generateSuratPDF() {
             const nama = document.getElementById('pdfNama').value.trim();
             const jabatan = document.getElementById('pdfJabatan').value.trim();
             const penerima = document.getElementById('pdfPenerima').value.trim();
             const subjek = document.getElementById('pdfSubjek').value.trim();
-            const alasan = document.getElementById('pdfAlasan').value.trim();
             const isi = document.getElementById('pdfIsi').value.trim();
 
             if (!nama || !subjek || !penerima) {
@@ -293,10 +355,9 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // Desain layout PDF
             doc.setFont("helvetica", "bold");
             doc.setFontSize(14);
-            doc.text("SURAT RESMI / FORMAL", 105, 20, { align: "center" });
+            doc.text("SURAT RESMI", 105, 20, { align: "center" });
 
             doc.setFontSize(11);
             doc.setFont("helvetica", "normal");
@@ -319,15 +380,6 @@
             yPos += 12;
 
             doc.setFont("helvetica", "bold");
-            doc.text("Latar Belakang / Alasan:", 20, yPos);
-            yPos += 6;
-            doc.setFont("helvetica", "normal");
-            const splitAlasan = doc.splitTextToSize(alasan, 170);
-            doc.text(splitAlasan, 20, yPos);
-            
-            yPos += (splitAlasan.length * 6) + 8;
-
-            doc.setFont("helvetica", "bold");
             doc.text("Isi Surat:", 20, yPos);
             yPos += 6;
             doc.setFont("helvetica", "normal");
@@ -339,7 +391,6 @@
             yPos += 25;
             doc.text(nama, 140, yPos);
 
-            // Simpan PDF
             doc.save(`${subjek.toLowerCase().replace(/\s+/g, '-')}.pdf`);
         }
     </script>
