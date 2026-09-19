@@ -24,7 +24,7 @@ Gaya Bahasa yang diinginkan: "${tone || 'Profesional & Formal'}"
 Berikan HANYA hasil kalimat yang sudah diperhalus tanpa teks pengantar, basa-basi, atau tanda kutip tambahan.`;
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
