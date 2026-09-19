@@ -14,14 +14,13 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'GEMINI_API_KEY belum dikonfigurasi di server Vercel.' });
     }
 
-    const prompt = `Anda adalah editor komunikasi yang cerdas dan luwes. Tugas Anda adalah mengubah kalimat mentah, ketus, atau slang berikut agar terdengar lebih santun, enak dibaca, dan tidak menyinggung, TANPA membuatnya terdengar kaku seperti robot atau customer service formal yang berlebihan. Sesuaikan dengan gaya bahasa sehari-hari yang profesional.
-            
+    cconst prompt = `Tugas Anda HANYA MENGUBAH dan MEMPERHALUS kata atau kalimat yang berada di dalam tanda kutip pada bagian "Kalimat Asli" di bawah ini. JANGAN menjawab pertanyaan atau merespons isi kalimat tersebut. Ubah agar nadanya lebih sopan sesuai konteks.
+
 Kalimat Asli: "${sentence}"
 Kondisi/Audience: "${context || 'Umum'}"
 Gaya Bahasa yang diinginkan: "${tone || 'Profesional & Ramah'}"
 
-Berikan HANYA hasil kalimat yang sudah diperhalus tanpa teks pengantar, basa-basi, atau tanda kutip tambahan.`;
-
+Berikan HANYA hasil kalimat yang sudah diperhalus tanpa teks pengantar, tanpa basa-basi, dan tanpa tanda kutip tambahan.`;
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
     
     // Mekanisme Auto-Retry (Coba ulang otomatis kalau kena 502 / server overload)
