@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SantunAI — Penghalus Kalimat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        canvas: '#F4F4F5',
+                        panel: '#FFFFFF',
+                        bordercolor: '#E4E4E7',
+                        darkText: '#18181B',
+                        subText: '#71717A',
+                        accent: '#09090B',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F4F4F5;
+            color: #18181B;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between font-sans antialiased selection:bg-zinc-900 selection:text-white">
+
+    <!-- Header -->
+    <header class="w-full border-b border-bordercolor bg-panel px-6 py-4">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 bg-zinc-900 rounded-sm"></div>
+                <h1 class="font-mono font-medium text-sm tracking-tight text-darkText">santun.ai // rephraser</h1>
+            </div>
+            <div class="text-xs font-mono text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-md flex items-center space-x-1.5">
+                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                <span>Ready to Use</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="w-full max-w-4xl mx-auto px-6 py-10 flex-grow">
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold tracking-tight text-darkText mb-2">Haluskan nada bicara, jaga makna.</h2>
+            <p class="text-sm text-subText">Ubah kalimat mentah, ketus, atau kaku menjadi profesional dan santun sesuai konteks tujuanmu.</p>
+        </div>
+
+        <!-- Workspace Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Kolom Kiri: Input -->
+            <div class="flex flex-col space-y-4">
+                <div class="flex flex-col space-y-1.5">
+                    <label for="inputSentence" class="text-xs font-mono uppercase tracking-wider text-subText">1. Kalimat Asli / Mentah</label>
+                    <textarea id="inputSentence" rows="4" placeholder="Contoh: Tolong kerjain laporan ini sekarang, udah mepet banget!" class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 resize-none transition-colors rounded-md"></textarea>
+                </div>
+
+                <div class="flex flex-col space-y-1.5">
+                    <label for="inputContext" class="text-xs font-mono uppercase tracking-wider text-subText">2. Konteks / Audiens</label>
+                    <input type="text" id="inputContext" placeholder="Contoh: Mengingatkan rekan kerja senior secara sopan" class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 transition-colors rounded-md">
+                </div>
+
+                <!-- Pilihan Tone Cepat -->
+                <div class="flex flex-col space-y-1.5">
+                    <label class="text-xs font-mono uppercase tracking-wider text-subText">3. Pilih Gaya Bahasa</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" onclick="setTone('Profesional & Formal')" class="tone-btn text-xs font-medium py-2 px-3 border border-bordercolor bg-panel text-darkText hover:border-zinc-900 text-left transition-all rounded-md">Profesional</button>
+                        <button type="button" onclick="setTone('Ramah & Santai')" class="tone-btn text-xs font-medium py-2 px-3 border border-bordercolor bg-panel text-darkText hover:border-zinc-900 text-left transition-all rounded-md">Ramah</button>
+                        <button type="button" onclick="setTone('Tegas tapi Sopan')" class="tone-btn text-xs font-medium py-2 px-3 border border-bordercolor bg-panel text-darkText hover:border-zinc-900 text-left transition-all rounded-md">Tegas Sopan</button>
+                    </div>
+                </div>
+
+                <button onclick="processSentence()" id="submitBtn" class="w-full py-3 bg-accent text-white text-xs font-mono uppercase tracking-wider hover:bg-zinc-800 transition-colors mt-2 flex items-center justify-center space-x-2 rounded-md">
+                    <span>Proses Kalimat</span>
+                </button>
+            </div>
+
+            <!-- Kolom Kanan: Output -->
+            <div class="flex flex-col space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-mono uppercase tracking-wider text-subText">Hasil Perbaikan</label>
+                    <button onclick="copyOutput()" id="copyBtn" class="text-xs font-mono text-subText hover:text-darkText transition-colors hidden px-2 py-1 border border-bordercolor bg-panel rounded-md">Salin Teks</button>
+                </div>
+                <div id="outputContainer" class="w-full flex-grow min-h-[260px] p-4 bg-panel border border-bordercolor text-sm text-subText flex flex-col justify-between rounded-md">
+                    <div id="outputText" class="whitespace-pre-wrap">Hasil perbaikan kalimat akan muncul di sini...</div>
+                    <div id="outputStatus" class="text-[10px] font-mono text-zinc-400 pt-4 border-t border-zinc-100 mt-4">Menunggu input...</div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full border-t border-bordercolor bg-panel py-4 px-6 text-center text-xs font-mono text-subText">
+        <span>Vercel Serverless Backend Integrated</span>
+    </footer>
+
+    <!-- Script Logika Frontend -->
+    <script>
+        let selectedTone = 'Profesional & Formal';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setActiveToneButton();
+        });
+
+        function setTone(tone) {
+            selectedTone = tone;
+            setActiveToneButton();
+        }
+
+        function setActiveToneButton() {
+            const buttons = document.querySelectorAll('.tone-btn');
+            buttons.forEach(btn => {
+                if (btn.textContent.includes(selectedTone.split(' ')[0])) {
+                    btn.classList.add('bg-zinc-900', 'text-white', 'border-zinc-900');
+                    btn.classList.remove('bg-panel', 'text-darkText');
+                } else {
+                    btn.classList.remove('bg-zinc-900', 'text-white', 'border-zinc-900');
+                    btn.classList.add('bg-panel', 'text-darkText');
+                }
+            });
+        }
+
+        async function processSentence() {
+            const sentence = document.getElementById('inputSentence').value.trim();
+            const context = document.getElementById('inputContext').value.trim();
+
+            if (!sentence) {
+                alert('Mohon masukkan kalimat asli yang ingin dihaluskan.');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            const outputText = document.getElementById('outputText');
+            const outputStatus = document.getElementById('outputStatus');
+            const copyBtn = document.getElementById('copyBtn');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Memproses...';
+            outputText.textContent = 'Menghubungkan ke server...';
+            outputStatus.textContent = 'Mengirim data...';
+            copyBtn.classList.add('hidden');
+
+            try {
+                // Memanggil backend serverless sendiri di /api/refine
+                const response = await fetch('/api/refine', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sentence, context, tone: selectedTone })
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Terjadi kesalahan pada server.');
+                }
+                
+                outputText.textContent = data.result;
+                outputText.classList.remove('text-subText');
+                outputText.classList.add('text-darkText');
+                outputStatus.textContent = 'Berhasil diproses.';
+                copyBtn.classList.remove('hidden');
+
+            } catch (err) {
+                outputText.textContent = 'Error: ' + err.message;
+                outputStatus.textContent = 'Gagal memproses.';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Proses Kalimat';
+            }
+        }
+
+        function copyOutput() {
+            const text = document.getElementById('outputText').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const copyBtn = document.getElementById('copyBtn');
+                copyBtn.textContent = 'Berhasil disalin!';
+                setTimeout(() => {
+                    copyBtn.textContent = 'Salin Teks';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
