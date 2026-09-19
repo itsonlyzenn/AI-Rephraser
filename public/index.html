@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SantunAI — Penghalus Kalimat & Surat</title>
+    <title>SantunAI — Workspace</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- CDN jsPDF untuk export dokumen surat -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         tailwind.config = {
@@ -47,13 +46,12 @@
                 <h1 class="font-mono font-medium text-sm tracking-tight text-darkText">santun.ai // workspace</h1>
             </div>
             <div class="flex items-center space-x-3">
-                <!-- Navigasi Tombol Mode -->
                 <div class="text-xs font-mono flex bg-zinc-100 p-1 border border-bordercolor rounded-md">
                     <button onclick="switchMode('rephraser')" id="navRephraser" class="px-3 py-1 rounded transition-colors bg-zinc-900 text-white font-medium">Rephraser</button>
                     <button onclick="switchMode('pdf')" id="navPdf" class="px-3 py-1 rounded transition-colors text-subText hover:text-darkText">Generator Surat</button>
                 </div>
-                <div class="text-xs font-mono text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-md flex items-center space-x-1.5">
-                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                <div class="text-xs font-mono text-zinc-600 bg-zinc-50 border border-bordercolor px-3 py-1.5 rounded-md flex items-center space-x-1.5">
+                    <span class="w-2 h-2 bg-zinc-900 rounded-full"></span>
                     <span>Ready</span>
                 </div>
             </div>
@@ -63,7 +61,7 @@
     <!-- Main Content -->
     <main class="w-full max-w-4xl mx-auto px-6 py-10 flex-grow">
 
-        <!-- ================= FITUR 1: REPHRASER ================= -->
+        <!-- FITUR 1: REPHRASER -->
         <div id="viewRephraser">
             <div class="mb-8">
                 <h2 class="text-2xl font-bold tracking-tight text-darkText mb-2">Haluskan nada bicara, jaga makna.</h2>
@@ -109,15 +107,14 @@
             </div>
         </div>
 
-        <!-- ================= FITUR 2: GENERATOR SURAT & PREVIEW ================= -->
+        <!-- FITUR 2: GENERATOR SURAT & PREVIEW -->
         <div id="viewPdf" class="hidden">
             <div class="mb-8">
                 <h2 class="text-2xl font-bold tracking-tight text-darkText mb-2">Generator Surat Resmi & Preview.</h2>
-                <p class="text-sm text-subText">Isi form di kiri, gunakan bantuan AI untuk merapikan isinya, lalu lihat hasil preview secara real-time di kanan.</p>
+                <p class="text-sm text-subText">Isi form di kiri, gunakan tombol bantu tulis untuk merapikan isi, lalu lihat hasil preview di kanan.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Kolom Kiri: Form Input -->
                 <div class="flex flex-col space-y-4">
                     <div class="flex flex-col space-y-1.5">
                         <label class="text-xs font-mono uppercase tracking-wider text-subText">Nama Pengirim</label>
@@ -142,9 +139,9 @@
                     <div class="flex flex-col space-y-1.5">
                         <div class="flex justify-between items-center">
                             <label class="text-xs font-mono uppercase tracking-wider text-subText">Isi Surat / Alasan</label>
-                            <button type="button" onclick="bantuTulisAI()" id="aiBtn" class="text-[11px] font-mono text-emerald-600 hover:underline">✨ Bantu Tulis dengan AI</button>
+                            <button type="button" onclick="bantuTulisAI()" id="aiBtn" class="text-[11px] font-mono text-darkText underline hover:text-zinc-600">Bantu Tulis (Otomatis)</button>
                         </div>
-                        <textarea id="pdfIsi" rows="5" oninput="updatePreview()" placeholder="Tuliskan isi surat secara kasar di sini, lalu klik Bantu Tulis dengan AI..." class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 resize-none transition-colors rounded-md"></textarea>
+                        <textarea id="pdfIsi" rows="5" oninput="updatePreview()" placeholder="Tuliskan isi surat secara kasar di sini..." class="w-full p-3 bg-panel border border-bordercolor text-sm text-darkText focus:outline-none focus:border-zinc-900 resize-none transition-colors rounded-md"></textarea>
                     </div>
 
                     <button onclick="generateSuratPDF()" class="w-full py-3 bg-accent text-white text-xs font-mono uppercase tracking-wider hover:bg-zinc-800 transition-colors mt-2 flex items-center justify-center space-x-2 rounded-md">
@@ -152,7 +149,6 @@
                     </button>
                 </div>
 
-                <!-- Kolom Kanan: Live Preview Dokumen -->
                 <div class="flex flex-col space-y-1.5">
                     <label class="text-xs font-mono uppercase tracking-wider text-subText">Live Preview Surat</label>
                     <div id="previewContainer" class="w-full flex-grow min-h-[420px] p-6 bg-panel border border-bordercolor text-xs text-darkText font-serif leading-relaxed flex flex-col justify-between rounded-md shadow-sm">
@@ -186,7 +182,7 @@
 
     <!-- Footer -->
     <footer class="w-full border-t border-bordercolor bg-panel py-4 px-6 text-center text-xs font-mono text-subText">
-        <span>Vercel Serverless Backend Integrated</span>
+        <span>Vercel Serverless Backend</span>
     </footer>
 
     <!-- Script Logika Frontend -->
@@ -285,7 +281,6 @@
             navigator.clipboard.writeText(text);
         }
 
-        // Live Preview Update
         function updatePreview() {
             const nama = document.getElementById('pdfNama').value || '[Nama Pengirim]';
             const jabatan = document.getElementById('pdfJabatan').value || '[Jabatan]';
@@ -301,18 +296,17 @@
             document.getElementById('prevTandaTangan').textContent = nama;
         }
 
-        // Fitur AI Bantu Tulis Isi Surat
         async function bantuTulisAI() {
             const rawText = document.getElementById('pdfIsi').value.trim();
             const subjek = document.getElementById('pdfSubjek').value.trim();
 
             if (!rawText) {
-                alert('Tuliskan poin-poin atau draf kasar di kolom isi surat terlebih dahulu untuk dibantu AI.');
+                alert('Tuliskan poin-poin atau draf kasar di kolom isi surat terlebih dahulu.');
                 return;
             }
 
             const aiBtn = document.getElementById('aiBtn');
-            aiBtn.textContent = '✨ AI sedang merangkai...';
+            aiBtn.textContent = 'Memproses...';
             aiBtn.disabled = true;
 
             try {
@@ -332,14 +326,13 @@
                 document.getElementById('pdfIsi').value = data.result;
                 updatePreview();
             } catch (err) {
-                alert('Gagal memproses AI: ' + err.message);
+                alert('Gagal memproses: ' + err.message);
             } finally {
-                aiBtn.textContent = '✨ Bantu Tulis dengan AI';
+                aiBtn.textContent = 'Bantu Tulis (Otomatis)';
                 aiBtn.disabled = false;
             }
         }
 
-        // Cetak PDF
         function generateSuratPDF() {
             const nama = document.getElementById('pdfNama').value.trim();
             const jabatan = document.getElementById('pdfJabatan').value.trim();
@@ -348,7 +341,7 @@
             const isi = document.getElementById('pdfIsi').value.trim();
 
             if (!nama || !subjek || !penerima) {
-                alert('Kolom Nama Pengirim, Penerima, dan Subjek wajib diisi!');
+                alert('Kolom Nama Pengirim, Penerima, dan Subjek wajib diisi.');
                 return;
             }
 
