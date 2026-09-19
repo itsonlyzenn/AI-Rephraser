@@ -14,11 +14,11 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'GEMINI_API_KEY belum dikonfigurasi di server Vercel.' });
     }
 
-    const prompt = `Bertindaklah sebagai ahli komunikasi profesional. Haluskan atau santunkan kalimat berikut agar enak dibaca, sopan, namun tidak menghilangkan maksud aslinya.
+    const prompt = `Anda adalah editor komunikasi yang cerdas dan luwes. Tugas Anda adalah mengubah kalimat mentah, ketus, atau slang berikut agar terdengar lebih santun, enak dibaca, dan tidak menyinggung, TANPA membuatnya terdengar kaku seperti robot atau customer service formal yang berlebihan. Sesuaikan dengan gaya bahasa sehari-hari yang profesional.
             
 Kalimat Asli: "${sentence}"
 Kondisi/Audience: "${context || 'Umum'}"
-Gaya Bahasa yang diinginkan: "${tone || 'Profesional & Formal'}"
+Gaya Bahasa yang diinginkan: "${tone || 'Profesional & Ramah'}"
 
 Berikan HANYA hasil kalimat yang sudah diperhalus tanpa teks pengantar, basa-basi, atau tanda kutip tambahan.`;
 
